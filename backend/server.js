@@ -17,10 +17,10 @@ app.use('/api/projects', projectRoutes)
 app.use('/api/tasks', taskRoutes)
 app.get('/api/dashboard', require('./middlewares/auth'), projectController.dashboard)
 
-const frontendPath = process.env.VERCEL ? path.join(__dirname, '../frontend/dist') : path.join(__dirname, 'frontend/dist')
-app.use(express.static(frontendPath))
+const distPath = path.join(__dirname, 'dist')
+app.use(express.static(distPath))
 app.get('*', (req, res) => {
-  res.sendFile(path.join(frontendPath, 'index.html'))
+  res.sendFile(path.join(distPath, 'index.html'))
 })
 
 const PORT = process.env.PORT || 3000

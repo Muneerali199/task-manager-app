@@ -1,10 +1,10 @@
 {
-  "framework": "vite",
+  "framework": null,
   "builds": [
-    { "src": "backend/server.js", "use": "@vercel/node" }
+    { "src": "backend", "use": "@vercel/node", "config": { "outputDirectory": "backend" } }
   ],
   "routes": [
-    { "src": "/api/(.*)", "dest": "/backend/server.js" },
-    { "src": "/(.*)", "dest": "/backend/server.js" }
+    { "src": "/api/(.*)", "dest": "backend/server.js" },
+    { "src": "/(.*)", "dest": "backend/server.js" }
   ]
 }
