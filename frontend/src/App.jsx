@@ -34,11 +34,11 @@ function App() {
   return (
     <div className="app-shell">
       <header>
-        <Link to="/">Task Manager</Link>
+        <Link to="/">Task<span>Manager</span></Link>
         {user ? (
           <div className="nav-right">
-            <span>{user.name}</span>
-            <button onClick={logout}>logout</button>
+            <span>Hey, {user.name.split(' ')[0]}!</span>
+            <button className="secondary" onClick={logout}>Logout</button>
           </div>
         ) : null}
       </header>

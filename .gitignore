@@ -3,7 +3,6 @@ node_modules/
 *.db
 *.db-journal
 dist/
-frontend/
 .git/
 .DS_Store
 *.log
