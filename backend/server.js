@@ -22,6 +22,11 @@ const frontendPath = process.env.VERCEL
   : path.join(__dirname, 'dist')
 
 app.use(express.static(frontendPath))
+
+app.get('/api/*', (req, res) => {
+  res.status(404).json({ msg: 'API not found' })
+})
+
 app.get('*', (req, res) => {
   res.sendFile(path.join(frontendPath, 'index.html'))
 })
