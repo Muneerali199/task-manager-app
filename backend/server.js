@@ -17,12 +17,15 @@ app.use('/api/projects', projectRoutes)
 app.use('/api/tasks', taskRoutes)
 app.get('/api/dashboard', require('./middlewares/auth'), projectController.dashboard)
 
-app.use(express.static(path.join(__dirname, 'dist')))
+const frontendPath = process.env.VERCEL ? path.join(__dirname, '../frontend/dist') : path.join(__dirname, 'frontend/dist')
+app.use(express.static(frontendPath))
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'dist/index.html'))
+  res.sendFile(path.join(frontendPath, 'index.html'))
 })
 
 const PORT = process.env.PORT || 3000
 app.listen(PORT, () => {
-  console.log(`Server port ${PORT} pe chal raha hai`)
+  console.log(`Server running on port ${PORT}`)
 })
+
+module.exports = app
