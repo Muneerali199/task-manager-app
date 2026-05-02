@@ -1,27 +1,10 @@
 {
   "framework": "vite",
   "builds": [
-    {
-      "src": "backend/server.js",
-      "use": "@vercel/node"
-    },
-    {
-      "src": "frontend",
-      "use": "@vercel/static-build@1"
-    }
+    { "src": "backend/server.js", "use": "@vercel/node" }
   ],
   "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "backend/server.js"
-    },
-    {
-      "src": "/",
-      "dest": "frontend/dist/index.html"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "frontend/dist/$1"
-    }
+    { "src": "/api/(.*)", "dest": "/backend/server.js" },
+    { "src": "/(.*)", "dest": "/backend/server.js" }
   ]
 }
