@@ -4,12 +4,13 @@
       "src": "backend/server.js",
       "use": "@vercel/node",
       "config": {
-        "buildCommand": "cd backend && npm install && npx prisma generate && npx prisma db push --skip-generate"
+        "buildCommand": "cd backend && npm install && npx prisma generate"
       }
     }
   ],
   "routes": [
     { "src": "/api/(.*)", "dest": "backend/server.js" },
     { "src": "/(.*)", "dest": "backend/server.js" }
-  ]
+  ],
+  "outputDirectory": "backend"
 }

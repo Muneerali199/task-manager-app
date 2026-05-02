@@ -17,13 +17,17 @@ app.use('/api/projects', projectRoutes)
 app.use('/api/tasks', taskRoutes)
 app.get('/api/dashboard', require('./middlewares/auth'), projectController.dashboard)
 
-app.get('/api/health', async (req, res) => {
+app.get('/api/setup', async (req, res) => {
   try {
     const prisma = require('./config/db')
-    await prisma.$queryRaw`SELECT 1`
-    res.json({ status: 'ok', db: 'connected' })
+    await prisma.$executeRaw`CREATE TABLE IF NOT EXISTS "User" (id SERIAL PRIMARY KEY, name TEXT NOT NULL, email TEXT UNIQUE NOT NULL, "passwordHash" TEXT NOT NULL, "createdAt" TIMESTAMP DEFAULT NOW())`
+    await prisma.$executeRaw`CREATE TABLE IF NOT EXISTS "Project" (id SERIAL PRIMARY KEY, name TEXT NOT NULL, description TEXT, "createdBy" INTEGER NOT NULL, "createdAt" TIMESTAMP DEFAULT NOW())`
+    await prisma.$executeRaw`CREATE TABLE IF NOT EXISTS "ProjectMember" (id SERIAL PRIMARY KEY, "projectId" INTEGER NOT NULL, "userId" INTEGER NOT NULL, role TEXT NOT NULL, UNIQUE("projectId", "userId"))`
+    await prisma.$executeRaw`CREATE TABLE IF NOT EXISTS "Task" (id SERIAL PRIMARY KEY, "projectId" INTEGER NOT NULL, title TEXT NOT NULL, description TEXT, "assignedTo" INTEGER, status TEXT DEFAULT 'todo', "dueDate" TIMESTAMP, "createdAt" TIMESTAMP DEFAULT NOW())`
+    await prisma.$executeRaw`CREATE INDEX IF NOT EXISTS "User_email_idx" ON "User"(email)`
+    res.json({ msg: 'Tables created!' })
   } catch (e) {
-    res.json({ status: 'ok', db: 'error', msg: e.message })
+    res.status(500).json({ error: e.message })
   }
 })
 
