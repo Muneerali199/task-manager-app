@@ -15,11 +15,11 @@ const register = async (req, res) => {
       data: { name, email, passwordHash: hash }
     })
 
-    const token = jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET, { expiresIn: '7d' })
+    const token = jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET || 'secret', { expiresIn: '7d' })
     res.json({ token, user: { id: user.id, name: user.name, email: user.email } })
   } catch (err) {
-    console.log('register err', err.message)
-    res.status(500).json({ msg: 'something went wrong' })
+    console.log('register err', err)
+    res.status(500).json({ msg: err.message })
   }
 }
 
@@ -34,11 +34,11 @@ const login = async (req, res) => {
     const ok = await bcrypt.compare(password, user.passwordHash)
     if (!ok) return res.status(400).json({ msg: 'bad password' })
 
-    const token = jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET, { expiresIn: '7d' })
+    const token = jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET || 'secret', { expiresIn: '7d' })
     res.json({ token, user: { id: user.id, name: user.name, email: user.email } })
   } catch (err) {
-    console.log('login err', err.message)
-    res.status(500).json({ msg: 'something went wrong' })
+    console.log('login err', err)
+    res.status(500).json({ msg: err.message })
   }
 }
 

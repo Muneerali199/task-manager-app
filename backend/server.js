@@ -20,12 +20,46 @@ app.get('/api/dashboard', require('./middlewares/auth'), projectController.dashb
 app.get('/api/setup', async (req, res) => {
   try {
     const prisma = require('./config/db')
-    await prisma.$executeRaw`CREATE TABLE IF NOT EXISTS "User" (id SERIAL PRIMARY KEY, name TEXT NOT NULL, email TEXT UNIQUE NOT NULL, "passwordHash" TEXT NOT NULL, "createdAt" TIMESTAMP DEFAULT NOW())`
-    await prisma.$executeRaw`CREATE TABLE IF NOT EXISTS "Project" (id SERIAL PRIMARY KEY, name TEXT NOT NULL, description TEXT, "createdBy" INTEGER NOT NULL, "createdAt" TIMESTAMP DEFAULT NOW())`
-    await prisma.$executeRaw`CREATE TABLE IF NOT EXISTS "ProjectMember" (id SERIAL PRIMARY KEY, "projectId" INTEGER NOT NULL, "userId" INTEGER NOT NULL, role TEXT NOT NULL, UNIQUE("projectId", "userId"))`
-    await prisma.$executeRaw`CREATE TABLE IF NOT EXISTS "Task" (id SERIAL PRIMARY KEY, "projectId" INTEGER NOT NULL, title TEXT NOT NULL, description TEXT, "assignedTo" INTEGER, status TEXT DEFAULT 'todo', "dueDate" TIMESTAMP, "createdAt" TIMESTAMP DEFAULT NOW())`
-    await prisma.$executeRaw`CREATE INDEX IF NOT EXISTS "User_email_idx" ON "User"(email)`
-    res.json({ msg: 'Tables created!' })
+    await prisma.$executeRaw`DROP TABLE IF EXISTS "Task" CASCADE`
+    await prisma.$executeRaw`DROP TABLE IF EXISTS "ProjectMember" CASCADE`
+    await prisma.$executeRaw`DROP TABLE IF EXISTS "Project" CASCADE`
+    await prisma.$executeRaw`DROP TABLE IF EXISTS "User" CASCADE`
+    await prisma.$executeRaw`
+      CREATE TABLE "User" (
+        id SERIAL PRIMARY KEY,
+        name TEXT NOT NULL,
+        email TEXT UNIQUE NOT NULL,
+        "passwordHash" TEXT NOT NULL,
+        "createdAt" TIMESTAMP DEFAULT NOW()
+      )`
+    await prisma.$executeRaw`
+      CREATE TABLE "Project" (
+        id SERIAL PRIMARY KEY,
+        name TEXT NOT NULL,
+        description TEXT,
+        "createdBy" INTEGER NOT NULL,
+        "createdAt" TIMESTAMP DEFAULT NOW()
+      )`
+    await prisma.$executeRaw`
+      CREATE TABLE "ProjectMember" (
+        id SERIAL PRIMARY KEY,
+        "projectId" INTEGER NOT NULL,
+        "userId" INTEGER NOT NULL,
+        role TEXT NOT NULL,
+        UNIQUE("projectId", "userId")
+      )`
+    await prisma.$executeRaw`
+      CREATE TABLE "Task" (
+        id SERIAL PRIMARY KEY,
+        "projectId" INTEGER NOT NULL,
+        title TEXT NOT NULL,
+        description TEXT,
+        "assignedTo" INTEGER,
+        status TEXT DEFAULT 'todo',
+        "dueDate" TIMESTAMP,
+        "createdAt" TIMESTAMP DEFAULT NOW()
+      )`
+    res.json({ msg: 'Tables recreated!' })
   } catch (e) {
     res.status(500).json({ error: e.message })
   }
