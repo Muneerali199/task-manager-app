@@ -1,0 +1,9 @@
+node_modules/
+.env
+*.db
+*.db-journal
+dist/
+frontend/
+.git/
+.DS_Store
+*.log
