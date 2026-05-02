@@ -1,7 +1,12 @@
 {
-  "framework": null,
   "builds": [
-    { "src": "backend", "use": "@vercel/node", "config": { "outputDirectory": "backend" } }
+    {
+      "src": "backend/server.js",
+      "use": "@vercel/node",
+      "config": {
+        "buildCommand": "cd frontend && npm install && npm run build"
+      }
+    }
   ],
   "routes": [
     { "src": "/api/(.*)", "dest": "backend/server.js" },
