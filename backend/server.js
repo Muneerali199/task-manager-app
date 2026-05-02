@@ -17,6 +17,16 @@ app.use('/api/projects', projectRoutes)
 app.use('/api/tasks', taskRoutes)
 app.get('/api/dashboard', require('./middlewares/auth'), projectController.dashboard)
 
+app.get('/api/health', async (req, res) => {
+  try {
+    const prisma = require('./config/db')
+    await prisma.$queryRaw`SELECT 1`
+    res.json({ status: 'ok', db: 'connected' })
+  } catch (e) {
+    res.json({ status: 'ok', db: 'error', msg: e.message })
+  }
+})
+
 const frontendPath = process.env.VERCEL 
   ? path.join(__dirname, '../frontend/dist') 
   : path.join(__dirname, 'dist')
